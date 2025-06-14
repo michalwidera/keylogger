@@ -20,5 +20,5 @@ Result: log.txt
 {'key': 'up', 'press_time': 10681.42, 'release_time': 10788.51},
 {'key': 'backspace', 'press_time': 12959.44, 'release_time': 13273.49},
 {'key': 'l', 'press_time': 14201.25, 'release_time': 14308.36},
-{'key': 'down', 'press_time': 14758.62, 'release_time': 14865.68}
+{'key': 'down', 'press_time': 14758.62, 'release_time': 14865.68}]
 ```
