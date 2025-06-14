@@ -1,3 +1,5 @@
+# pip install keyboard
+
 import keyboard as kb
 import time
 from time import time as now
@@ -7,6 +9,8 @@ mydict = {}
 keystroke = []
 
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+print("Hit esc at the end.")
 
 i = 0
 
@@ -32,12 +36,12 @@ def keylog():
        flight_time = round( release_time - press_time , 2 )
        # print( key.name , str( press_time )+ "ms"  , str((int(key.time * 100000) - mydict[key.scan_code]) / 100) + "ms" )
 
-       item = { 'key' : key.name , 'press_time': press_time , 'release_time': release_time , 'flight_time': flight_time }
+       item = { 'key' : key.name , 'press_time': press_time , 'release_time': release_time }
        keystroke.append( item )
        # print(item)
 
-       lorem = lorem[1:]
        print(lorem, end="\r", flush=True)
+       lorem = lorem[1:]
 
     curr_time_since_epoch = time.time()
     curr_time = time.ctime(curr_time_since_epoch)
