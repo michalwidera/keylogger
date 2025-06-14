@@ -4,6 +4,8 @@ from time import time as now
 
 mydict = {}
 
+keystroke = []
+
 time_start = int(now() * 100000)
 
 def keylog():
@@ -15,7 +17,14 @@ def keylog():
     if key.event_type == "down":
        mydict[key.scan_code] = int(key.time * 100000)
     else:
-       print( key.name , str(( mydict[key.scan_code] - time_start ) / 100 )+ "ms"  , str((int(key.time * 100000) - mydict[key.scan_code]) / 100) + "ms" )
+       press_time = ( mydict[key.scan_code] - time_start ) / 100
+       release_time = (int(key.time * 100000) - time_start ) / 100
+       flight_time = round( release_time - press_time , 2 )
+       # print( key.name , str( press_time )+ "ms"  , str((int(key.time * 100000) - mydict[key.scan_code]) / 100) + "ms" )
+
+       item = { 'key' : key.name , 'press_time': press_time , 'release_time': release_time , 'flight_time': flight_time }
+       keystroke.append( item )
+       print(item)
 
     curr_time_since_epoch = time.time()
     curr_time = time.ctime(curr_time_since_epoch)
