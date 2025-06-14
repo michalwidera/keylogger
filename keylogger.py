@@ -10,7 +10,7 @@ keystroke = []
 
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
-print("Hit esc at the end.")
+print("Recording biometric samples - Hit esc at the end.")
 
 i = 0
 
@@ -52,8 +52,11 @@ def keylog():
 
   kb.hook(on_action)
   kb.wait('esc')
-  # log_f.close()
 
-  print(keystroke)
+  log_f = open("log.txt", 'a')
+  log_f.write(str(keystroke))
+  log_f.close()
+
+  print("\n\nResult: log.txt")
 
 keylog()
