@@ -6,12 +6,22 @@ mydict = {}
 
 keystroke = []
 
+lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+i = 0
+
 time_start = int(now() * 100000)
 
+print(lorem, end="\r", flush=True)
+
 def keylog():
-  log_f = open("log.txt", 'a')
+
+  # log_f = open("log.txt", 'a')
 
   def on_action(key):
+
+    global lorem
+
     # print(key.name, int(key.time * 100000), key.scan_code, key.event_type , key.to_json(ensure_ascii=False) )
 
     if key.event_type == "down":
@@ -24,17 +34,22 @@ def keylog():
 
        item = { 'key' : key.name , 'press_time': press_time , 'release_time': release_time , 'flight_time': flight_time }
        keystroke.append( item )
-       print(item)
+       # print(item)
+
+       lorem = lorem[1:]
+       print(lorem, end="\r", flush=True)
 
     curr_time_since_epoch = time.time()
     curr_time = time.ctime(curr_time_since_epoch)
     
     # https://docs.python.org/3/library/time.html#time.perf_counter_ns
-    log_f.write(str(curr_time) + " : " + str(time.perf_counter_ns()) + " : " + str(int(key.time * 100000)) + " : " + str(key) + "\n")
-    log_f.flush()
+    # log_f.write(str(curr_time) + " : " + str(time.perf_counter_ns()) + " : " + str(int(key.time * 100000)) + " : " + str(key) + "\n")
+    # log_f.flush()
 
   kb.hook(on_action)
   kb.wait('esc')
-  log_f.close()
+  # log_f.close()
+
+  print(keystroke)
 
 keylog()
