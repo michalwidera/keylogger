@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import string
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Dane wejściowe
 keystrokes_e1= [{'key': 'L', 'press_time': 2215.59, 'release_time': 2271.54}, {'key': 'shift', 'press_time': 2018.86, 'release_time': 2314.68}, {'key': 'o', 'press_time': 2434.72, 'release_time': 2490.67}, {'key': 'r', 'press_time': 2823.7, 'release_time': 2878.74}, {'key': 'e', 'press_time': 3036.71, 'release_time': 3143.67}, {'key': 'm', 'press_time': 3335.66, 'release_time': 3416.8}, {'key': 'space', 'press_time': 4529.04, 'release_time': 4609.62}, {'key': 'i', 'press_time': 5030.06, 'release_time': 5086.06}, {'key': 'p', 'press_time': 5480.06, 'release_time': 5536.07}, {'key': 's', 'press_time': 6122.89, 'release_time': 6230.06}, {'key': 'u', 'press_time': 6369.91, 'release_time': 6425.77}, {'key': 'm', 'press_time': 7465.13, 'release_time': 7520.09}, {'key': 'space', 'press_time': 7986.68, 'release_time': 8067.83}, {'key': 'd', 'press_time': 9229.76, 'release_time': 9336.83}, {'key': 'o', 'press_time': 9555.91, 'release_time': 9611.96}, {'key': 'l', 'press_time': 10261.84, 'release_time': 10318.19}, {'key': 'o', 'press_time': 10450.84, 'release_time': 10531.81}, {'key': 'r', 'press_time': 10865.15, 'release_time': 10997.99}, {'key': 'space', 'press_time': 11804.97, 'release_time': 11887.23}, {'key': 's', 'press_time': 12789.25, 'release_time': 12871.04}, {'key': 'i', 'press_time': 13554.28, 'release_time': 13636.11}, {'key': 't', 'press_time': 13894.09, 'release_time': 13976.28}, {'key': 'space', 'press_time': 14213.26, 'release_time': 14295.2}, {'key': 'a', 'press_time': 15608.97, 'release_time': 15690.17}, {'key': 'm', 'press_time': 15962.02, 'release_time': 16018.02}, {'key': 'e', 'press_time': 16248.36, 'release_time': 16329.31}, {'key': 't', 'press_time': 16490.97, 'release_time': 16573.26}, {'key': 'space', 'press_time': 17507.96, 'release_time': 17563.21}, {'key': ',', 'press_time': 19327.23, 'release_time': 19383.22}, {'key': 'c', 'press_time': 24337.25, 'release_time': 24419.16}, {'key': 'o', 'press_time': 24585.66, 'release_time': 24666.72}, {'key': 'n', 'press_time': 25029.25, 'release_time': 25110.22}, {'key': 's', 'press_time': 25469.34, 'release_time': 25576.13}, {'key': 'e', 'press_time': 25815.71, 'release_time': 25896.56}, {'key': 'c', 'press_time': 27631.5, 'release_time': 27713.23}, {'key': 't', 'press_time': 28002.36, 'release_time': 28084.36}, {'key': 'e', 'press_time': 29324.33, 'release_time': 29405.48}, {'key': 't', 'press_time': 30394.4, 'release_time': 30476.36}, {'key': 'u', 'press_time': 30741.77, 'release_time': 30822.32}, {'key': 'r', 'press_time': 31416.73, 'release_time': 31523.79}, {'key': 'space', 'press_time': 32434.44, 'release_time': 32490.76}, {'key': 'a', 'press_time': 34785.79, 'release_time': 34841.4}, {'key': 'd', 'press_time': 35080.81, 'release_time': 35161.5}, {'key': 'i', 'press_time': 35405.64, 'release_time': 35460.52}, {'key': 'p', 'press_time': 36732.85, 'release_time': 36814.7}, {'key': 'i', 'press_time': 38622.93, 'release_time': 38704.51}, {'key': 's', 'press_time': 39113.53, 'release_time': 39194.51}, {'key': 'c', 'press_time': 40492.52, 'release_time': 40574.53}, {'key': 'i', 'press_time': 40738.66, 'release_time': 40820.61}, {'key': 'n', 'press_time': 42631.03, 'release_time': 42711.75}, {'key': 'g', 'press_time': 42894.68, 'release_time': 43001.82}, {'key': 'space', 'press_time': 43677.74, 'release_time': 43733.77}, {'key': 'e', 'press_time': 45231.79, 'release_time': 45312.67}, {'key': 'l', 'press_time': 45584.09, 'release_time': 45665.06}, {'key': 'i', 'press_time': 45873.92, 'release_time': 45956.11}, {'key': 't', 'press_time': 46137.22, 'release_time': 46244.75}, {'key': ',', 'press_time': 49972.99, 'release_time': 50054.85}, {'key': 'space', 'press_time': 51113.86, 'release_time': 51195.85}, {'key': 's', 'press_time': 52072.21, 'release_time': 52154.35}, {'key': 'e', 'press_time': 52288.93, 'release_time': 52395.95}, {'key': 'd', 'press_time': 52528.96, 'release_time': 52585.18}, {'key': 'space', 'press_time': 53264.12, 'release_time': 53345.96}, {'key': 'd', 'press_time': 54171.87, 'release_time': 54253.87}, {'key': 'o', 'press_time': 54369.27, 'release_time': 54424.88}, {'key': 'space', 'press_time': 54630.97, 'release_time': 54713.04}, {'key': 'e', 'press_time': 56442.96, 'release_time': 56551.32}, {'key': 'i', 'press_time': 56794.24, 'release_time': 56876.39}, {'key': 'u', 'press_time': 58764.01, 'release_time': 58819.06}, {'key': 's', 'press_time': 60677.13, 'release_time': 60784.06}, {'key': 'm', 'press_time': 61054.49, 'release_time': 61136.16}, {'key': 'o', 'press_time': 61297.07, 'release_time': 61379.19}, {'key': 'd', 'press_time': 61658.1, 'release_time': 61791.51}, {'key': 'space', 'press_time': 62394.5, 'release_time': 62476.51}, {'key': 't', 'press_time': 63356.58, 'release_time': 63412.56}, {'key': 'e', 'press_time': 63568.35, 'release_time': 63650.36}, {'key': 'm', 'press_time': 63867.51, 'release_time': 63949.57}, {'key': 'o', 'press_time': 64135.24, 'release_time': 64216.21}, {'key': 'backspace', 'press_time': 65130.19, 'release_time': 65211.19}, {'key': 'p', 'press_time': 65469.3, 'release_time': 65551.61}, {'key': 'o', 'press_time': 65683.52, 'release_time': 65739.71}, {'key': 'r', 'press_time': 65942.66, 'release_time': 66050.63}, {'key': 'space', 'press_time': 66289.25, 'release_time': 66423.6}, {'key': 'c', 'press_time': 67767.35, 'release_time': 67849.76}, {'key': 'i', 'press_time': 68168.32, 'release_time': 68224.41}, {'key': 'd', 'press_time': 69874.64, 'release_time': 69955.66}, {'key': 'i', 'press_time': 70147.72, 'release_time': 70228.43}, {'key': 'd', 'press_time': 71569.49, 'release_time': 71650.46}, {'key': 'u', 'press_time': 71995.42, 'release_time': 72077.9}, {'key': 'n', 'press_time': 73553.5, 'release_time': 73635.83}, {'key': 't', 'press_time': 73920.38, 'release_time': 74027.47}, {'key': 'space', 'press_time': 74394.84, 'release_time': 74502.54}, {'key': 'u', 'press_time': 81890.67, 'release_time': 81972.63}, {'key': 't', 'press_time': 82412.73, 'release_time': 82519.72}, {'key': 'space', 'press_time': 82990.75, 'release_time': 83071.75}, {'key': 'l', 'press_time': 84036.08, 'release_time': 84092.09}, {'key': 'a', 'press_time': 84317.79, 'release_time': 84399.06}, {'key': 'b', 'press_time': 84849.08, 'release_time': 84904.72}, {'key': 'o', 'press_time': 85094.11, 'release_time': 85148.86}, {'key': 'r', 'press_time': 86335.29, 'release_time': 86417.12}, {'key': 'e', 'press_time': 86651.87, 'release_time': 86760.12}, {'key': 'space', 'press_time': 87051.8, 'release_time': 87158.97}, {'key': 'e', 'press_time': 88243.83, 'release_time': 88325.92}, {'key': 't', 'press_time': 88410.37, 'release_time': 88464.85}, {'key': 'space', 'press_time': 88728.99, 'release_time': 88810.97}, {'key': 'd', 'press_time': 89792.24, 'release_time': 89873.28}, {'key': 'o', 'press_time': 90041.24, 'release_time': 90095.84}, {'key': 'l', 'press_time': 90281.61, 'release_time': 90363.32}, {'key': 'o', 'press_time': 90470.07, 'release_time': 90525.95}, {'key': 'r', 'press_time': 90910.4, 'release_time': 90965.89}, {'key': 'e', 'press_time': 91122.95, 'release_time': 91231.04}, {'key': 'space', 'press_time': 91341.9, 'release_time': 91423.85}, {'key': 'm', 'press_time': 92695.95, 'release_time': 92752.3}, {'key': 'a', 'press_time': 92901.96, 'release_time': 92983.0}, {'key': 'g', 'press_time': 93251.31, 'release_time': 93281.21}, {'key': 'n', 'press_time': 93700.05, 'release_time': 93781.89}, {'key': 'a', 'press_time': 93907.12, 'release_time': 94041.45}, {'key': 'space', 'press_time': 94465.06, 'release_time': 94572.36}, {'key': 'a', 'press_time': 96609.03, 'release_time': 96716.08}, {'key': 'l', 'press_time': 96835.41, 'release_time': 96890.4}, {'key': 'i', 'press_time': 97048.23, 'release_time': 97104.17}, {'key': 'q', 'press_time': 97460.14, 'release_time': 97541.07}, {'key': 'u', 'press_time': 97838.06, 'release_time': 97893.37}, {'key': 'a', 'press_time': 98121.01, 'release_time': 98229.2}, {'key': '.', 'press_time': 100622.71, 'release_time': 100651.34}, {'key': '.', 'press_time': 101403.16, 'release_time': 101459.53}, {'key': '.', 'press_time': 101592.45, 'release_time': 101649.41}, {'key': '.', 'press_time': 101755.2, 'release_time': 101811.22}, {'key': '.', 'press_time': 101918.22, 'release_time': 101974.35}, {'key': '.', 'press_time': 102081.54, 'release_time': 102163.48}, {'key': '.', 'press_time': 102245.19, 'release_time': 102352.24}, {'key': '.', 'press_time': 102846.36, 'release_time': 102928.13}, {'key': '.', 'press_time': 103036.25, 'release_time': 103143.33}, {'key': '.', 'press_time': 103224.57, 'release_time': 103331.31}, {'key': 'enter', 'press_time': 104761.22, 'release_time': 104816.3}]
@@ -35,10 +38,13 @@ keystrokes_example = [{'key': 'L', 'press_time': 1924.12, 'release_time': 2005.1
  {'key': 'u', 'press_time': 10446.34, 'release_time': 10527.33},
  {'key': 'm', 'press_time': 11205.38, 'release_time': 11286.38}]
 
-keystrokes_a = keystrokes_y1
-keystrokes_b = keystrokes_x2
+keystrokes_a = keystrokes_y2
+keystrokes_b = keystrokes_z3
 
-show_fig = True
+text_a = "Seria Y2"
+text_b = "Seria Z3"
+
+show_fig = False
 
 # Tworzenie digrafów i obliczanie czasu między naciśnięciami
 def build_digraf(keystrokes):
@@ -78,11 +84,11 @@ def build_digraf(keystrokes):
         hold_a.append(hold_first)
         hold_b.append(hold_first)
 
-    print("digraf1=",digraphs)
-    print("----------")
-    print("digraf2=",dig2)
+    # print("digraf1=",digraphs)
+    # print("----------")
+    # print("digraf2=",dig2)
 
-    return x_dig, y_dig, interval, hold_a, hold_b
+    return x_dig, y_dig, interval, hold_a, hold_b, digraphs, dig2
 
 
 def build_ts(keystrokes,max_length):
@@ -111,10 +117,11 @@ def build_ts(keystrokes,max_length):
 
 # a,b,c,d,e = build_digraf(keystrokes_example)
 
-x_dig, y_dig, interval, hold_a, hold_b = build_digraf(keystrokes_a)
+x_dig1, y_dig1, interval1, hold_a1, hold_b1, digraph_small1, digraph_full1 = build_digraf(keystrokes_a)
+x_dig2, y_dig2, interval2, hold_a2, hold_b2, digraph_small2, digraph_full2 = build_digraf(keystrokes_b)
 
 import plotly.express as px
-df = pd.DataFrame({'X': x_dig, 'Y': y_dig, 'interval': interval, 'hold_a': hold_a, 'hold_b': hold_b})
+df = pd.DataFrame({'X': x_dig1, 'Y': y_dig1, 'interval': interval1, 'hold_a': hold_a1, 'hold_b': hold_b1})
 # print(df)
 #iqr_mask = df["interval"].between(0, df["interval"].quantile(4/5))
 #subset = df[iqr_mask]
@@ -127,8 +134,8 @@ if show_fig:
 # Przygotowanie danych
 letters = list(string.ascii_lowercase[:26])  # 'a' do 'j'
 
-df = pd.DataFrame({'X': x_dig, 'Y': y_dig, 'interval': interval, 'hold_a': hold_a, 'hold_b': hold_b})
-print(df)
+df = pd.DataFrame({'X': x_dig1, 'Y': y_dig1, 'interval': interval1, 'hold_a': hold_a1, 'hold_b': hold_b1})
+# print(df)
 
 # odcięcie 4-go kwantyla
 iqr_mask = df["interval"].between(0, df["interval"].quantile(4/5))
@@ -170,13 +177,13 @@ press2,hold2,key2,nr2 = build_ts(keystrokes_b,100)
 df1 = pd.DataFrame({
     'time': press1,
     'value': hold1,
-    'series': 'Series e'
+    'series': text_a
 })
 
 df2 = pd.DataFrame({
     'time': press2,
     'value': hold2,
-    'series': 'Series m'
+    'series': text_b
 })
 
 #df3 = pd.DataFrame({
@@ -191,8 +198,13 @@ df_combined = pd.concat([df1, df2], ignore_index=True)
 
 # Plot using Plotly Express
 fig = px.line(df_combined, x='time', y='value', color='series',
-            title='Three Time Series with Different Timestamps',
+            title='Rejestracja danych przez dwóch operatorów - porównanie',
+            labels = {
+                "time" : "czas rejestracji zdarzenia [ms]",
+                "value": "czas przelotu pomiędzy klawiszami [ms]"
+            },
             markers=True)
+
 
 if show_fig:
     fig.write_image("digraph-compare-two.svg")
@@ -215,7 +227,7 @@ fig.add_trace(go.Scatter(
     x=nr1,
     y=hold1,
     mode='lines+markers',
-    name='Series 1',
+    name=text_a,
     line=dict(color='blue')
 ))
 
@@ -224,17 +236,134 @@ fig.add_trace(go.Scatter(
     x=nr2,
     y=hold2,
     mode='lines+markers',
-    name='Series 2',
+    name=text_b,
     line=dict(color='red')
 ))
 
 fig.update_layout(
-    title='Two Time Series with Different Timestamps',
-    xaxis_title='Date',
-    yaxis_title='Value',
+    title='Rejestracja danych przez dwóch operatorów - dane znormalizowane - porównanie',
+    xaxis_title='Naciśnięcie kolejnego klawisza w czasie (znormalizowany)',
+    yaxis_title='Czas pomiędzy naciśnięciami [ms]',
     hovermode='x unified'
 )
 
 if show_fig:
     fig.write_image("digraph-compare-two-normalize.svg")
     fig.show()
+
+#####  ANALITYC PART
+
+# Konwersja do DataFrame
+
+print( text_a + " vs " + text_b )
+
+df_e = pd.DataFrame(digraph_small1).groupby("digraph").mean().rename(columns={"interval": "interval_a"})
+df_m = pd.DataFrame(digraph_small2).groupby("digraph").mean().rename(columns={"interval": "interval_b"})
+# df_m2= pd.DataFrame(digraf_operatora_m2).groupby("digraph").mean().rename(columns={"interval": "interval_m2"})
+
+# Połączenie danych po digrafach
+df_merged = df_e.join(df_m, how='inner')
+
+# Obliczenie korelacji
+correlation, p_value = pearsonr(df_merged["interval_a"], df_merged["interval_b"])
+
+print("Korelacja PCC= ", correlation)
+
+correlation = abs(correlation)
+smess = ""
+if -0.1 <= correlation < 0.1:
+    smess += 'Jest nieprawdopodobne aby te same osoby wprowadzały tekst.'
+elif 0.1 <= correlation < 0.4:
+    smess +=  'Jest mało prawdopodobne aby te same osoby wprowadzały tekst.'
+elif 0.4 <= correlation < 0.7:
+    smess += 'Istnieje pewne prawdopodobieństwo, że te same osoby wprowadzały tekst.'
+elif 0.7 <= correlation < 0.9:
+    smess += 'Prawdopodobnie, że te same osoby wprowadzały tekst.'
+elif 0.9 <= correlation < 1:
+    smess += 'Bardzo prawdopodobnie, że te same osoby wprowadzały tekst.'
+elif correlation == 1:
+    smess += 'To te same osoby wprowadzały ten tekst.'
+else:
+    smess += "Sprawdź co tu się stało."
+
+print("Istotność= ", p_value)
+
+if p_value < 0.05:
+    smess += '\nKorelacja istotna, jest mało prawdopodobne aby to był przypadek.'
+else:
+    smess += '\nKorelacja może być przypadkowa, poszerzenie zakresu badania jest wskazane.'
+
+print(smess)
+# Wizualizacja
+#plt.figure(figsize=(10, 6))
+#sns.scatterplot(data=df_merged, x="interval_e", y="interval_m")
+#plt.title(f'Porównanie czasów digrafów (korelacja = {correlation:.2f}, wartość p testu istotności = {p_value:.2f})\n'+smess)
+#plt.xlabel('Operator A - Średni czas digrafu (ms)')
+#plt.ylabel('Operator B - Średni czas digrafu (ms)')
+#plt.grid(True)
+#plt.tight_layout()
+
+# df_merged_sorted = df_merged.sort_values(by="interval_e")
+
+#plt.savefig("test-di.svg", format='svg')
+
+
+
+# plt.show()
+
+
+
+# correlation, p_value, df_merged_sorted.head(10)
+
+#
+
+'''
+1. correlation (współczynnik korelacji Pearsona)
+To wartość od -1 do 1, która mówi o sile i kierunku liniowej zależności między dwiema zmiennymi:
+
+Wartość	Interpretacja
++1	idealna dodatnia korelacja liniowa
+0	brak korelacji liniowej
+-1	idealna ujemna korelacja liniowa
+0.7 do 0.9	silna dodatnia korelacja
+0.4 do 0.7	umiarkowana dodatnia korelacja
+0.1 do 0.4	słaba dodatnia korelacja
+blisko 0	bardzo słaba lub brak korelacji liniowej
+
+2. p_value (wartość p dla testu istotności korelacji)
+To wartość statystyczna, która mówi, czy zaobserwowana korelacja jest istotna statystycznie, czyli:
+
+Mała wartość p (np. < 0.05) → korelacja jest istotna (mało prawdopodobne, że to przypadek).
+
+Duża wartość p (np. > 0.05) → korelacja może być przypadkowa.
+
+'''
+
+from dtaidistance import dtw
+import numpy as np
+
+# Funkcja ekstrakcji sekwencji numerycznych z danych digrafów
+def extract_features(digraphs):
+    # Można użyć jednej lub więcej cech np. [interval, press_time_diff]
+    return np.array([
+        [d["interval"], d["press_time_2"] - d["press_time_1"]]
+        for d in digraphs
+    ])
+
+# Dane wejściowe
+series_a = extract_features(digraph_full1)
+series_b = extract_features(digraph_full2)
+
+# Obliczanie DTW między dwiema sekwencjami
+# Uwaga: dtw.distance potrzebuje 1D sekwencji — stosujemy uproszczenie
+# Można użyć pełnej wersji DTW dla 2D poniżej
+dist = dtw.distance_matrix_fast([series_a[:,0], series_b[:,0]])[0,1]
+
+print(f"DTW dla 'interval': {dist:.2f}")
+
+# Alternatywnie: pełna wersja DTW dla sekwencji wektorów 2D
+from scipy.spatial.distance import euclidean
+from fastdtw import fastdtw
+
+distance_2d, path = fastdtw(series_a, series_b, dist=euclidean)
+print(f"DTW (2D - interval + press delta): {distance_2d:.2f}")
