@@ -36,7 +36,7 @@ keystrokes_example = [{'key': 'L', 'press_time': 1924.12, 'release_time': 2005.1
  {'key': 'm', 'press_time': 11205.38, 'release_time': 11286.38}]
 
 keystrokes_a = keystrokes_y1
-keystrokes_b = keystrokes_z1
+keystrokes_b = keystrokes_x2
 
 show_fig = True
 
@@ -47,6 +47,7 @@ def build_digraf(keystrokes):
     filtered_keystrokes = [k for k in keystrokes if k['key'] not in ['.','shift','alt', '@' , '#', ',' , '(', ')' , '&' , '%', 'alt gr', 'backspace' , 'enter', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' , '$', '^', '-', ';', '!' , '/', '−' , 'caps lock']]
 
     digraphs = []
+    dig2 = []
     x_dig = []
     y_dig = []
     interval = []
@@ -67,7 +68,9 @@ def build_digraf(keystrokes):
         hold_first = round(first['release_time'] - first['press_time'],2)
         hold_second =  round(second['release_time'] - second['press_time'],2)
 
+        flight_time = round( second['press_time'] - first['release_time'] , 2)
         digraphs.append({'digraph': digraph, 'interval': press_interval})
+        dig2.append({'digraph': digraph, 'interval': flight_time,"press_time_1":hold_first,"press_time_2":hold_second})
 
         x_dig.append(first['key'])
         y_dig.append(second['key'])
@@ -75,7 +78,9 @@ def build_digraf(keystrokes):
         hold_a.append(hold_first)
         hold_b.append(hold_first)
 
-    print("digraf=",digraphs)
+    print("digraf1=",digraphs)
+    print("----------")
+    print("digraf2=",dig2)
 
     return x_dig, y_dig, interval, hold_a, hold_b
 
@@ -110,7 +115,7 @@ x_dig, y_dig, interval, hold_a, hold_b = build_digraf(keystrokes_a)
 
 import plotly.express as px
 df = pd.DataFrame({'X': x_dig, 'Y': y_dig, 'interval': interval, 'hold_a': hold_a, 'hold_b': hold_b})
-print(df)
+# print(df)
 #iqr_mask = df["interval"].between(0, df["interval"].quantile(4/5))
 #subset = df[iqr_mask]
 fig = px.histogram(df, x="interval")
@@ -128,7 +133,7 @@ print(df)
 # odcięcie 4-go kwantyla
 iqr_mask = df["interval"].between(0, df["interval"].quantile(4/5))
 subset = df[iqr_mask]
-print(subset)
+# print(subset)
 
 # Tworzenie wykresu
 # fig = px.scatter(df, x='X', y='Y', size = 'interval', title='Scatterplot z uporządkowanymi literami')
